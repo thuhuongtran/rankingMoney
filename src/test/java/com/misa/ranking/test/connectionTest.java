@@ -5,9 +5,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import com.misa.ranking.entity.SlotGame;
 import com.misa.ranking.pools.HikariPool;
 
 /*
@@ -19,17 +24,17 @@ import com.misa.ranking.pools.HikariPool;
  *  then combine those small list into one list limit 
  * */
 public class connectionTest {
-	
-	public static void main(String[] args) throws SQLException, IOException {
+
+	public static void main(String[] args) throws SQLException, IOException, ParseException {
 		// testing connect to database
 		HikariPool.init();
 		Connection connection = HikariPool.getConnection();
 		String query = "SELECT `id`, `nickname`,`gameId`,`prize`,`totalBet`,`updateTime`,`create_time` FROM misa.slot_game_data WHERE `gameId` =1";
 		PreparedStatement st = connection.prepareStatement(query);
 		ResultSet rs = st.executeQuery();
-		//System.out.println("result "+rs);
+		// System.out.println("result "+rs);
 		List<SlotGame> slotGameLi = new ArrayList<SlotGame>();
-		while(rs.next()) {
+		while (rs.next()) {
 			SlotGame slotGame = new SlotGame();
 			slotGame.setId(rs.getLong("id"));
 			slotGame.setNickname(rs.getString("nickname"));
@@ -41,17 +46,8 @@ public class connectionTest {
 			slotGameLi.add(slotGame);
 		}
 		connection.close();
+		System.out.println(slotGameLi.get(0).getUpdateTime());
+		// get hour from date string
 		
-		// print list
-		for(SlotGame slotGame : slotGameLi) {
-			System.out.println();
-			System.out.print(slotGame.getId());
-			System.out.print("\t"+slotGame.getNickname());
-			System.out.print("\t"+slotGame.getGameId());
-			System.out.print("\t"+slotGame.getPrize());
-			System.out.print("\t"+slotGame.getTotalBet());
-			System.out.print("\t"+slotGame.getUpdateTime());
-			System.out.print("\t"+slotGame.getCreate_time());
-		}
 	}
 }
