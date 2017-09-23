@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.misa.ranking.entity.SlotGame;
+import com.misa.ranking.model.DataProcess;
 import com.misa.ranking.pools.HikariPool;
 
 /*
@@ -49,5 +50,8 @@ public class connectionTest {
 		System.out.println(slotGameLi.get(0).getUpdateTime());
 		// get hour from date string
 		
+		// testing difference
+		
+		System.out.println(DataProcess.getMoneyEarned(4000, 6000));
 	}
 }
