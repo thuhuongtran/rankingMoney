@@ -53,20 +53,29 @@ public class DataProcess {
 	}
 
 	// sort list of slotGameRank by moneyEarned
-	public static void sortByWinMoney(List<SlotGameRanking> slotGamRankLi) {
+	// then add winners who have highest moneyEarned in list
+	public static void addWinners(List<SlotGameRanking> slotGamRankLi, List<SlotGameRanking> winnerLi) {
+		// sorting firstly
 		slotGamRankLi.sort(new Comparator<SlotGameRanking>() {
-
 			public int compare(SlotGameRanking o1, SlotGameRanking o2) {
-				return Long.compare(o1.getMoneyEarned(), o2.getMoneyEarned());
+				return Long.compare(o2.getMoneyEarned(),o1.getMoneyEarned());
 			}
 		});
+		// add all winners in list
+		for(int i=0; i< slotGamRankLi.size();i++) {
+			if(i>=1 && slotGamRankLi.get(i).getMoneyEarned() < slotGamRankLi.get(i-1).getMoneyEarned())
+				break;
+			winnerLi.add(slotGamRankLi.get(i));
+		}
 	}
-
+	
+	
 	/*
 	 * divide into small list by hour of date
 	 * each list of hour is separated by null object
 	 */
 	public static List<SlotGameRanking> divideListByHour(List<SlotGameRanking> slotGamRankLi) throws ParseException {
+		
 		List<SlotGameRanking> dividedSlotGamRankLi = new ArrayList<SlotGameRanking>();
 		// create first time of date
 		String time = slotGamRankLi.get(0).getUpdateTime();
@@ -81,6 +90,11 @@ public class DataProcess {
 			// update time of date
 			time = slotGamRank.getUpdateTime();
 		}
+		// if list is over then add one more object which has gameId = 0
+		SlotGameRanking slotR = new SlotGameRanking();
+		slotR.setGameId(0);
+		dividedSlotGamRankLi.add(slotR);
+		
 		return dividedSlotGamRankLi;
 	}
 	/*
@@ -88,6 +102,7 @@ public class DataProcess {
 	 * add all winners with greatest money into an other list
 	 * */
 	public static List<SlotGameRanking> getWinnerRank(List<SlotGameRanking> dividedSlotGamRankLi) {
+		// small list is to save lists winner divided by hour of date
 		List<SlotGameRanking> smallLi = new ArrayList<SlotGameRanking>();
 		List<SlotGameRanking> winnerRankLi = new ArrayList<SlotGameRanking>();
 		SlotGameRanking winner = new SlotGameRanking();
@@ -98,13 +113,11 @@ public class DataProcess {
 				// firstly, divide list 
 				endPoint = dividedSlotGamRankLi.indexOf(slotGamRank);
 				smallLi = dividedSlotGamRankLi.subList(startPoint, endPoint);
-				// then sort small list by moneyEarned
-				sortByWinMoney(smallLi);
+				
 				// get object which has the highest moneyEarned --> n^2 OMG
-				System.out.println("size "+smallLi.size());
-				winner = smallLi.get(endPoint-1);
-				// add winner in new list
-				winnerRankLi.add(winner);
+				// then add winners in new list
+				addWinners(smallLi, winnerRankLi);
+				
 				// update points
 				startPoint = endPoint+1;
 			}
