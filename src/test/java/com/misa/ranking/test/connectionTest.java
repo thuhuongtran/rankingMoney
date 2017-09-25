@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.misa.ranking.entity.SlotGame;
+import com.misa.ranking.entity.SlotGameRanking;
 import com.misa.ranking.model.DataProcess;
 import com.misa.ranking.pools.HikariPool;
 
@@ -27,31 +28,21 @@ import com.misa.ranking.pools.HikariPool;
 public class connectionTest {
 
 	public static void main(String[] args) throws SQLException, IOException, ParseException {
-		// testing connect to database
-		HikariPool.init();
-		Connection connection = HikariPool.getConnection();
-		String query = "SELECT `id`, `nickname`,`gameId`,`prize`,`totalBet`,`updateTime`,`create_time` FROM misa.slot_game_data WHERE `gameId` =1";
-		PreparedStatement st = connection.prepareStatement(query);
-		ResultSet rs = st.executeQuery();
-		// System.out.println("result "+rs);
-		List<SlotGame> slotGameLi = new ArrayList<SlotGame>();
-		while (rs.next()) {
-			SlotGame slotGame = new SlotGame();
-			slotGame.setId(rs.getLong("id"));
-			slotGame.setNickname(rs.getString("nickname"));
-			slotGame.setGameId(rs.getInt("gameId"));
-			slotGame.setPrize(rs.getLong("prize"));
-			slotGame.setTotalBet(rs.getLong("totalBet"));
-			slotGame.setUpdateTime(rs.getString("updateTime"));
-			slotGame.setCreate_time(rs.getString("create_time"));
-			slotGameLi.add(slotGame);
+		
+		// testing sublist
+		List<Integer> intli = new ArrayList<Integer>();
+		intli.add(0);
+		intli.add(1);
+		intli.add(2);
+		intli.add(3);
+		intli.add(4);
+		intli.add(5);
+		intli.add(6);
+		
+		List<Integer> smallLi = intli.subList(0, 6);
+		for(Integer i : smallLi) {
+			System.out.println(i);
 		}
-		connection.close();
-		System.out.println(slotGameLi.get(0).getUpdateTime());
-		// get hour from date string
-		
-		// testing difference
-		
-		System.out.println(DataProcess.getMoneyEarned(4000, 6000));
+		System.out.println("index: "+intli.indexOf(3));
 	}
 }
