@@ -15,7 +15,7 @@ public class DBconnect {
 	// return resultSet of SlotGame database table 
 	public static ResultSet getSlotGameDBbyID(int gameId) throws SQLException, IOException {
 		// connect to db
-		HikariPool.init();
+		HikariPool.init_getDB();
 		Connection connection = HikariPool.getConnection();
 		String query = "SELECT `id`, `nickname`,`gameId`,`prize`,`totalBet`,`updateTime`,`create_time` "
 				+ "FROM misa.slot_game_data WHERE `gameId` =?";

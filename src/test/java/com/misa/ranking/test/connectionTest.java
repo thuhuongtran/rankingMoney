@@ -5,13 +5,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
+import com.misa.ranking.connection.DBconnect;
 import com.misa.ranking.entity.SlotGame;
 import com.misa.ranking.entity.SlotGameRanking;
 import com.misa.ranking.model.DataProcess;
@@ -24,25 +21,62 @@ import com.misa.ranking.pools.HikariPool;
  * then sort by win money
  *  player who fail will not be added in new list
  *  then combine those small list into one list limit 
+ *  
+ *  add all failure and winner in rank
+ * failure moneyEarned will be set to 0
+ *  
  * */
 public class connectionTest {
 
 	public static void main(String[] args) throws SQLException, IOException, ParseException {
-		
-		// testing sublist
-		List<Integer> intli = new ArrayList<Integer>();
-		intli.add(0);
-		intli.add(1);
-		intli.add(2);
-		intli.add(3);
-		intli.add(4);
-		intli.add(5);
-		intli.add(6);
-		
-		List<Integer> smallLi = intli.subList(0, 6);
-		for(Integer i : smallLi) {
-			System.out.println(i);
+		// testing ranking players by money earned
+		/*
+		List<SlotGame> slotGames = DBconnect.getSlotGameLi(DBconnect.getSlotGameDBbyID(1));
+		List<SlotGameRanking> slotGamRankLi = DataProcess.getSlotGameRankLi(slotGames);
+		List<SlotGameRanking> dividedLi = DataProcess.divideListByHour(slotGamRankLi);
+		List<SlotGameRanking> playerRankLi = DataProcess.getPlayerRank(dividedLi);
+		System.out.println("players ranking");
+		for (SlotGameRanking slotR : playerRankLi) {
+			System.out.println();
+			System.out.print("\t" + slotR.getGameId());
+			System.out.print("\t" + slotR.getId());
+			System.out.print("\t" + slotR.getNickname());
+			System.out.print("\t" + slotR.getMoneyEarned());
+			System.out.print("\t" + slotR.getPrize());
+			System.out.print("\t" + slotR.getTotalBet());
+			System.out.print("\t" + slotR.getUpdateTime());
 		}
-		System.out.println("index: "+intli.indexOf(3));
+		*/
+		/*
+		//testing timer tasks
+		Timer timer = new Timer();
+		timer.scheduleAtFixedRate(new Task(), 0, 2000);
+		*/
+		
+		// testing connecting to database --connected
+		/*
+		HikariPool.init_writeDB();
+		Connection connection = HikariPool.getConnection();
+		String query = "SELECT `user_id`, `nickname`,`gameId`,`prize`,`totalBet`,`updateTime` "
+				+ "FROM ranking.playerRanking_gameId2 ";
+		// execute query
+		PreparedStatement st = connection.prepareStatement(query);
+		ResultSet rs = st.executeQuery();
+		// close the connection
+		connection.close();
+		
+		while(rs.next()) {
+			System.out.println(rs.getInt("user_id"));
+			System.out.println(rs.getString("nickname"));
+			System.out.println(rs.getInt("gameId"));
+			System.out.println(rs.getLong("prize"));
+			System.out.println(rs.getLong("totalBet"));
+			System.out.println(rs.getString("updateTime"));
+		}
+		*/
+		// testing writing on database
+		
 	}
+
+
 }
