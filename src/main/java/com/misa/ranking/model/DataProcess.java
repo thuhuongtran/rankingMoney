@@ -32,7 +32,7 @@ public class DataProcess {
 	}
 
 	// turn list of SlotGame to list of SlotGameRanking
-	// remove players who failed
+	// failure' s moneyEarned will be set to 0
 	public static List<SlotGameRanking> getSlotGameRankLi(List<SlotGame> slotGameLi) {
 		List<SlotGameRanking> slotGamRankLi = new ArrayList<SlotGameRanking>();
 		for (SlotGame slotGame : slotGameLi) {
@@ -41,41 +41,40 @@ public class DataProcess {
 			gameRanking.setGameId(slotGame.getGameId());
 			gameRanking.setNickname(slotGame.getNickname());
 			gameRanking.setUpdateTime(slotGame.getUpdateTime());
-			// remove player who fail
+			gameRanking.setPrize(slotGame.getPrize());
+			gameRanking.setTotalBet(slotGame.getTotalBet());
+			// remove player who be fail
 			long moneyEarned = getMoneyEarned(slotGame.getPrize(), slotGame.getTotalBet());
-
-			if (moneyEarned > 0) {
+			// add moneyEarned of failure to be 0
+			if (moneyEarned < 0)
+				gameRanking.setMoneyEarned(0);
+			else
 				gameRanking.setMoneyEarned(moneyEarned);
-				slotGamRankLi.add(gameRanking);
-			}
+
+			slotGamRankLi.add(gameRanking);
 		}
 		return slotGamRankLi;
 	}
 
 	// sort list of slotGameRank by moneyEarned
-	// then add winners who have highest moneyEarned in list
-	public static void addWinners(List<SlotGameRanking> slotGamRankLi, List<SlotGameRanking> winnerLi) {
+	// then add all winners and failures in list
+	public static void addWinners(List<SlotGameRanking> slotGamRankLi, List<SlotGameRanking> playerLi) {
 		// sorting firstly
 		slotGamRankLi.sort(new Comparator<SlotGameRanking>() {
 			public int compare(SlotGameRanking o1, SlotGameRanking o2) {
-				return Long.compare(o2.getMoneyEarned(),o1.getMoneyEarned());
+				return Long.compare(o2.getMoneyEarned(), o1.getMoneyEarned());
 			}
 		});
 		// add all winners in list
-		for(int i=0; i< slotGamRankLi.size();i++) {
-			if(i>=1 && slotGamRankLi.get(i).getMoneyEarned() < slotGamRankLi.get(i-1).getMoneyEarned())
-				break;
-			winnerLi.add(slotGamRankLi.get(i));
-		}
+		playerLi.addAll(slotGamRankLi);
 	}
-	
-	
+
 	/*
-	 * divide into small list by hour of date
-	 * each list of hour is separated by null object
+	 * divide into small list by hour of date each list of hour is separated by null
+	 * object
 	 */
 	public static List<SlotGameRanking> divideListByHour(List<SlotGameRanking> slotGamRankLi) throws ParseException {
-		
+
 		List<SlotGameRanking> dividedSlotGamRankLi = new ArrayList<SlotGameRanking>();
 		// create first time of date
 		String time = slotGamRankLi.get(0).getUpdateTime();
@@ -94,35 +93,33 @@ public class DataProcess {
 		SlotGameRanking slotR = new SlotGameRanking();
 		slotR.setGameId(0);
 		dividedSlotGamRankLi.add(slotR);
-		
+
 		return dividedSlotGamRankLi;
 	}
+
 	/*
-	 * sort list by moneyEarned
-	 * add all winners with greatest money into an other list
-	 * */
-	public static List<SlotGameRanking> getWinnerRank(List<SlotGameRanking> dividedSlotGamRankLi) {
-		// small list is to save lists winner divided by hour of date
+	 * call sort list by moneyEarned then call add all winners and failures into list
+	 */
+	public static List<SlotGameRanking> getPlayerRank(List<SlotGameRanking> dividedSlotGamRankLi) {
+		// small list is to save lists players divided by hour of date
 		List<SlotGameRanking> smallLi = new ArrayList<SlotGameRanking>();
-		List<SlotGameRanking> winnerRankLi = new ArrayList<SlotGameRanking>();
-		SlotGameRanking winner = new SlotGameRanking();
-		int startPoint =0;
+		List<SlotGameRanking> playerRankLi = new ArrayList<SlotGameRanking>();
+		int startPoint = 0;
 		int endPoint = 0;
-		for(SlotGameRanking slotGamRank : dividedSlotGamRankLi) {
-			if(slotGamRank.getGameId()==0) {
-				// firstly, divide list 
+		for (SlotGameRanking slotGamRank : dividedSlotGamRankLi) {
+			if (slotGamRank.getGameId() == 0) {
+				// firstly, get divide list
 				endPoint = dividedSlotGamRankLi.indexOf(slotGamRank);
 				smallLi = dividedSlotGamRankLi.subList(startPoint, endPoint);
-				
-				// get object which has the highest moneyEarned --> n^2 OMG
+
 				// then add winners in new list
-				addWinners(smallLi, winnerRankLi);
-				
+				addWinners(smallLi, playerRankLi);
+
 				// update points
-				startPoint = endPoint+1;
+				startPoint = endPoint + 1;
 			}
-			
+
 		}
-		return winnerRankLi;
+		return playerRankLi;
 	}
 }

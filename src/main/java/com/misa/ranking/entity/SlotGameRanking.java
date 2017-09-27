@@ -5,7 +5,10 @@ public class SlotGameRanking {
 	private long id;
 	private String nickname;
 	private long moneyEarned;
+	private long prize;
+	private long totalBet;
 	private String updateTime;
+	
 	public int getGameId() {
 		return gameId;
 	}
@@ -35,6 +38,18 @@ public class SlotGameRanking {
 	}
 	public void setUpdateTime(String updateTime) {
 		this.updateTime = updateTime;
+	}
+	public long getPrize() {
+		return prize;
+	}
+	public void setPrize(long prize) {
+		this.prize = prize;
+	}
+	public long getTotalBet() {
+		return totalBet;
+	}
+	public void setTotalBet(long totalBet) {
+		this.totalBet = totalBet;
 	}
 	
 }
