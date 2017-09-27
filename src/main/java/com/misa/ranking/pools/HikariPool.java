@@ -11,10 +11,19 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 public class HikariPool {
-    private static final String HIRAKI_CONFIG_FILE = "config/hikari.properties";
+    private static final String HIRAKI_CONFIG_FILE_GETDB = "config/hikari_getDB.properties";
+    private static final String HIRAKI_CONFIG_FILE_WRITEDB = "config/hikari_writeDB.properties";
     private static HikariDataSource dataSource;
-    public static void init() throws IOException {
-        InputStream input = new FileInputStream(HIRAKI_CONFIG_FILE);
+    public static void init_getDB() throws IOException {
+        InputStream input = new FileInputStream(HIRAKI_CONFIG_FILE_GETDB);
+        Properties prop = new Properties();
+        prop.load(input);
+        HikariConfig config = new HikariConfig(prop);
+        config.setMaximumPoolSize(20);
+        dataSource = new HikariDataSource(config);
+    }
+    public static void init_writeDB() throws IOException {
+        InputStream input = new FileInputStream(HIRAKI_CONFIG_FILE_WRITEDB);
         Properties prop = new Properties();
         prop.load(input);
         HikariConfig config = new HikariConfig(prop);
