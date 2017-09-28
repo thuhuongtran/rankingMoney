@@ -75,7 +75,20 @@ public class connectionTest {
 		}
 		*/
 		// testing writing on database
+		HikariPool.init_writeDB();
+		Connection connection = HikariPool.getConnection();
+		String query = "INSERT INTO `playerRanking_gameId1` (`user_id`,`nickname`,`winCash`,`prize`,`totalBet`,`updateTime`)" + "VALUES (?,?,?,?,?,?)";
+		PreparedStatement st = connection.prepareStatement(query);
+		st.setLong(1, 133);
+		st.setString(2, "testing");
+		st.setLong(3, 1000);
+		st.setLong(4, 2000);
+		st.setLong(5, 1000);
+		st.setString(6, "2017-07-02 22:03:00");
+		st.executeUpdate();
+		connection.close();
 		
+		System.out.println("success");
 	}
 
 

@@ -21,7 +21,7 @@ public class WriteDB {
 		for (SlotGameRanking slotGamRank : winnerRankLi) {
 			try {
 				// execute query
-				String query = "INSERT INTO `ranking.playerRanking_gameId" + gameId
+				String query = "INSERT INTO `playerRanking_gameId" + gameId
 						+ "` (`user_id`,`nickname`,`winCash`,`prize`,`totalBet`,`updateTime`)" + "VALUES (?,?,?,?,?,?)";
 				PreparedStatement st = connection.prepareStatement(query);
 				st.setLong(1, slotGamRank.getId());
